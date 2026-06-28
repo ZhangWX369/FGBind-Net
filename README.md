@@ -17,6 +17,7 @@ predict_torchscript.py      Prediction script
 example_input.csv           Example input file
 example_predictions.csv     Example output file
 requirements.txt            Python dependencies
+check_environment.py        Environment reporting script
 README.md                   Usage instructions
 ```
 
@@ -29,6 +30,30 @@ pip install -r requirements.txt
 ```
 
 The prediction script uses PyTorch, NumPy and pandas.
+
+## Tested environment
+
+The inference package was tested under the following environment:
+
+```text
+Operating system: Ubuntu 22.04.1 LTS, Linux kernel 6.8.0-85-generic
+Python: 3.10.8
+PyTorch: 2.6.0+cu124
+CUDA: 12.4
+cuDNN: 9.1.0
+NumPy: 1.26.4
+pandas: 1.4.2
+SciPy: 1.15.3
+scikit-learn: 1.7.2
+matplotlib: 3.4.3
+tqdm: 4.67.3
+RDKit: 2024.3.2
+GPU: NVIDIA GeForce RTX 4070 Ti
+NVIDIA driver: 535.171.04
+```
+
+Only PyTorch, NumPy and pandas are required for the provided inference script.
+Other packages were used in the broader experimental environment.
 
 ## Input format
 
