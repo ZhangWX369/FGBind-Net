@@ -1,52 +1,57 @@
-# FGBind-Net inference package
+# FGBind-Net
 
-This folder contains a minimal inference package for FGBind-Net, a
-foreground-background guided sequence-level model for protein-ligand binding
-affinity prediction.
+FGBind-Net is a foreground-background guided sequence-level model for
+protein-ligand binding affinity prediction. It uses ligand SMILES, pocket
+sequence and non-pocket protein sequence information to estimate binding
+affinity.
 
-## Recommended public files
+This repository provides resources for running FGBind-Net predictions, including
+the released inference model, a prediction script, and example input/output
+files.
 
-For a minimal GitHub release, include:
-
-- `predict_torchscript.py`: command-line inference script.
-- `fgbind_net_inference.pt`: TorchScript inference model.
-- `example_input.csv`: a small example input file.
-- `example_predictions.csv`: expected output for the example input.
-- `README.md`: this usage guide.
-- `requirements.txt`: Python dependencies.
-
-The full training scripts, Python model source, experimental notebooks, raw
-PDBbind data and internal analysis files are not included in this minimal
-inference package.
-
-## Input format
-
-`predict_torchscript.py` expects a CSV file with the following columns:
+## Files
 
 ```text
-pdb_id,ligand_smiles,full_protein_seq,fg_pocket_seq,bg_protein_seq
+fgbind_net_inference.pt     Released FGBind-Net inference model
+predict_torchscript.py      Prediction script
+example_input.csv           Example input file
+example_predictions.csv     Example output file
+requirements.txt            Python dependencies
+README.md                   Usage instructions
 ```
 
-Column meanings:
+## Requirements
 
-- `pdb_id`: complex identifier.
-- `ligand_smiles`: ligand SMILES string.
-- `full_protein_seq`: full protein sequence.
-- `fg_pocket_seq`: pocket residue sequence used as foreground input.
-- `bg_protein_seq`: non-pocket protein sequence used as background input.
-
-The original PDBbind data are not redistributed here. Users should obtain
-PDBbind from the official database subject to its terms of use.
-
-## Usage
-
-Install dependencies:
+Install the required Python packages:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Run prediction:
+The prediction script uses PyTorch, NumPy and pandas.
+
+## Input format
+
+The input file should be a CSV table with the following columns:
+
+```text
+pdb_id,ligand_smiles,full_protein_seq,fg_pocket_seq,bg_protein_seq
+```
+
+Column descriptions:
+
+- `pdb_id`: complex identifier.
+- `ligand_smiles`: ligand SMILES string.
+- `full_protein_seq`: full protein sequence.
+- `fg_pocket_seq`: binding-pocket sequence used as foreground input.
+- `bg_protein_seq`: non-pocket protein sequence used as background input.
+
+The original PDBbind data should be obtained from the PDBbind database according
+to its terms of use.
+
+## Prediction
+
+Run prediction with the provided example file:
 
 ```bash
 python predict_torchscript.py \
@@ -55,7 +60,7 @@ python predict_torchscript.py \
   --output predictions.csv
 ```
 
-Use CPU explicitly:
+To run on CPU:
 
 ```bash
 python predict_torchscript.py \
@@ -65,26 +70,32 @@ python predict_torchscript.py \
   --device cpu
 ```
 
-The output CSV contains:
+The output file contains:
 
 ```text
 pdb_id,predicted_affinity
 ```
 
-## Sequence lengths and tokenization
+## Model input lengths
 
-The released checkpoint uses the following maximum lengths:
+The released inference model uses the following maximum lengths:
 
 - background protein sequence: 819
 - foreground pocket sequence: 66
 - ligand SMILES: 153
 
-Longer inputs are truncated and shorter inputs are padded with the mask token.
-Unknown characters are mapped to the mask token.
+Longer inputs are truncated to the maximum length. Shorter inputs are padded
+with the mask token. Characters outside the predefined vocabulary are mapped to
+the mask token.
 
-## Suggested citation
+## Example
 
-If you use this model, please cite the associated manuscript:
+The repository includes `example_input.csv` and the corresponding
+`example_predictions.csv` for a quick format check.
+
+## Citation
+
+If you use FGBind-Net, please cite:
 
 FGBind-Net: foreground-background guided local-global modeling for
 protein-ligand binding affinity prediction.
