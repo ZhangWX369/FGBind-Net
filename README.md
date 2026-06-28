@@ -17,7 +17,6 @@ predict_torchscript.py      Prediction script
 example_input.csv           Example input file
 example_predictions.csv     Example output file
 requirements.txt            Python dependencies
-check_environment.py        Environment reporting script
 README.md                   Usage instructions
 ```
 
@@ -33,7 +32,7 @@ The prediction script uses PyTorch, NumPy and pandas.
 
 ## Tested environment
 
-The inference package was tested under the following environment:
+The prediction workflow was tested under the following environment:
 
 ```text
 Operating system: Ubuntu 22.04.1 LTS, Linux kernel 6.8.0-85-generic
@@ -51,9 +50,6 @@ RDKit: 2024.3.2
 GPU: NVIDIA GeForce RTX 4070 Ti
 NVIDIA driver: 535.171.04
 ```
-
-Only PyTorch, NumPy and pandas are required for the provided inference script.
-Other packages were used in the broader experimental environment.
 
 ## Input format
 
