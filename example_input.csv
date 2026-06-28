@@ -1,0 +1,2 @@
+pdb_id,ligand_smiles,full_protein_seq,fg_pocket_seq,bg_protein_seq
+example_001,CC(=O)NC1=CC=C(O)C=C1,MKWVTFISLLFLFSSAYSRGVFRRDTHKSEIAHRFKDLGE,FRRDTHKSEI,MKWVTFISLLFLFSSAYSGVAKDLGE
