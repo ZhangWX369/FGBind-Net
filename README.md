@@ -5,19 +5,22 @@ protein-ligand binding affinity prediction. It uses ligand SMILES, pocket
 sequence and non-pocket protein sequence information to estimate binding
 affinity.
 
-This repository provides resources for running FGBind-Net predictions, including
-the released inference model, a prediction script, and example input/output
-files.
+This repository provides the released FGBind-Net inference model, processed
+benchmark data tables, and an evaluation script for reproducing the reported
+CASF-2013 and CASF-2016 test results.
 
 ## Files
 
 ```text
 fgbind_net_inference.pt     Released FGBind-Net inference model
-predict_torchscript.py      Prediction script
-example_input.csv           Example input file
-example_predictions.csv     Example output file
+evaluate_fgbind.py          Prediction and evaluation script
 requirements.txt            Python dependencies
 README.md                   Usage instructions
+
+data/train.csv              Training set feature table
+data/validation.csv         Validation set feature table
+data/casf2013.csv           CASF-2013 test set feature table
+data/casf2016.csv           CASF-2016 test set feature table
 ```
 
 ## Requirements
@@ -27,8 +30,6 @@ Install the required Python packages:
 ```bash
 pip install -r requirements.txt
 ```
-
-The prediction script uses PyTorch, NumPy and pandas.
 
 ## Tested environment
 
@@ -51,50 +52,63 @@ GPU: NVIDIA GeForce RTX 4070 Ti
 NVIDIA driver: 535.171.04
 ```
 
-## Input format
+## Data format
 
-The input file should be a CSV table with the following columns:
+Each CSV file in `data/` contains the following columns:
 
 ```text
-pdb_id,ligand_smiles,full_protein_seq,fg_pocket_seq,bg_protein_seq
+pdb_id,affinity,full_protein_seq,fg_pocket_seq,bg_protein_seq,ligand_smiles
 ```
 
 Column descriptions:
 
 - `pdb_id`: complex identifier.
-- `ligand_smiles`: ligand SMILES string.
+- `affinity`: experimental binding affinity value.
 - `full_protein_seq`: full protein sequence.
 - `fg_pocket_seq`: binding-pocket sequence used as foreground input.
 - `bg_protein_seq`: non-pocket protein sequence used as background input.
+- `ligand_smiles`: ligand SMILES string.
 
-The original PDBbind data should be obtained from the PDBbind database according
-to its terms of use.
+The processed feature tables were generated from PDBbind v2020 and the CASF
+benchmark sets. Original PDBbind resources should be cited and used according
+to their terms of use.
 
-## Prediction
+## Reproducing benchmark metrics
 
-Run prediction with the provided example file:
-
-```bash
-python predict_torchscript.py \
-  --input example_input.csv \
-  --model fgbind_net_inference.pt \
-  --output predictions.csv
-```
-
-To run on CPU:
+Run evaluation on CASF-2013 and CASF-2016:
 
 ```bash
-python predict_torchscript.py \
-  --input example_input.csv \
+python evaluate_fgbind.py \
   --model fgbind_net_inference.pt \
-  --output predictions.csv \
-  --device cpu
+  --input data/casf2013.csv data/casf2016.csv \
+  --output-dir results
 ```
 
-The output file contains:
+The script writes prediction files and a metric summary:
 
 ```text
-pdb_id,predicted_affinity
+results/casf2013_predictions.csv
+results/casf2016_predictions.csv
+results/metrics_summary.csv
+```
+
+The summary contains five metrics: RMSE, PCC, MAE, SD and CI.
+
+Expected benchmark results:
+
+```text
+Dataset     RMSE    PCC     MAE     SD      CI
+CASF-2016   1.171   0.846   0.917   1.158   0.829
+CASF-2013   1.384   0.792   1.120   1.374   0.793
+```
+
+To evaluate additional feature tables, pass them after `--input`:
+
+```bash
+python evaluate_fgbind.py \
+  --model fgbind_net_inference.pt \
+  --input data/validation.csv \
+  --output-dir results_validation
 ```
 
 ## Model input lengths
@@ -108,11 +122,6 @@ The released inference model uses the following maximum lengths:
 Longer inputs are truncated to the maximum length. Shorter inputs are padded
 with the mask token. Characters outside the predefined vocabulary are mapped to
 the mask token.
-
-## Example
-
-The repository includes `example_input.csv` and the corresponding
-`example_predictions.csv` for a quick format check.
 
 ## Citation
 
